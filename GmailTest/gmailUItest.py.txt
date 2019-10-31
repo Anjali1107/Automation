@@ -1,0 +1,110 @@
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as cond
+import time
+
+user_name = "testn390@gmail.com"
+password = "testn@468"
+driver = None
+
+
+
+def main():
+	
+	try:
+		assert "Gmail" in driver.title
+		print("Gmail is opened successfully")
+		driver.maximize_window()
+	except:
+		print("Gmail is not opened.")
+	login()
+	
+
+def login():
+	try:
+		element = WebDriverWait(driver,10).until(cond.element_to_be_clickable((By.XPATH, "//input[@type='email']")))
+		element.send_keys(user_name)
+	except:
+		print("Entering username is not successfull.")
+	try:
+		element = WebDriverWait(driver,10).until(cond.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Next')]")))
+		element.click()
+	except:
+		print("email next is not clicked")
+	try:
+		element = WebDriverWait(driver,10).until(cond.element_to_be_clickable((By.XPATH, "//input[@type='password']")))
+		element.send_keys(password)
+	except:
+		print("Entering password is not successfull.")
+
+
+
+	try:
+		element = WebDriverWait(driver,10).until(cond.element_to_be_clickable((By.XPATH, "//span[contains(text(), 'Next')]")))
+		element.click()
+		compose_mail()
+	except:
+		print("Password Next button is not clicked.")
+
+def compose_mail():
+	try:
+
+		element = WebDriverWait(driver,10).until(cond.element_to_be_clickable((By.XPATH, "//div[contains(text(), 'Compose')]")))
+		element.click()
+	except:
+		print("Compose button is not clicked.")
+
+	try:
+	
+		element = WebDriverWait(driver,10).until(cond.element_to_be_clickable((By.NAME, "to")))
+		element.click()
+		element.send_keys("anjaliprasadj@gmail.com")
+	except:
+		print("New Message To: is not visible.")
+
+	element = driver.find_element_by_name("subjectbox")
+	element.send_keys("compose_test")
+
+	element = driver.find_element_by_xpath("//div[@aria-label = 'Message Body']")
+	file1 = open("body_text.txt","r+")  
+	data = file1.read() 
+	element.send_keys(data)
+	file1.close()
+
+	#element = driver.find_element_by_xpath("//div[contains(text(), 'Send')]")
+	#element.click()
+	ActionChains(driver) \
+	.key_down(Keys.CONTROL) \
+    	.key_down(Keys.ENTER) \
+    	.key_up(Keys.CONTROL) \
+    	.key_up(Keys.ENTER)\
+    	.perform()
+	time.sleep(10)
+	validate_email()
+#element = driver.find_element_by_xpath("//a[contains(text(), 'Sent')]")
+def validate_email():
+	#validating email was sent or not 
+	try:
+		element = WebDriverWait(driver,10).until(cond.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'Sent')]")))
+		element.click()
+	except:
+		print("Sent button is not clicked.")
+	try:
+        	#driver.find_element_by_xpath("//span[contains(text(), 'compose_test')]")
+		element = WebDriverWait(driver,10).until(cond.presence_of_element_located((By.XPATH, "//span[contains(text(), 'compose_test')]")))
+		print("Email was sent successfully.")
+
+	except:
+        	print("Email was not sent successfully.")
+
+if __name__== "__main__":
+	#launches chrome browser
+	driver = webdriver.Chrome(executable_path="drivers\\chromedriver")
+	#launches firefox browser
+	#driver = webdriver.Firefox(executable_path="drivers\\geckodriver")
+	driver.get("https://www.gmail.com")
+	main()
+	driver.close()

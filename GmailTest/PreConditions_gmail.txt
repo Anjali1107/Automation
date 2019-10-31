@@ -1,0 +1,8 @@
+1. install selenium using "pip install selenium" command.
+2. Credentials are user_name : testn390@gmail.com
+		password : testn@468
+3. Login to google account once manually with given credentials as google sends a verification code to added phone number.
+3. Kindly check with me for verification code as I have added my phone number.
+4. By default test will first launch chrome browser. 
+To change browser to firefox comment out driver = webdriver.Chrome(executable_path="drivers\\chromedriver") and
+uncomment driver = webdriver.Firefox(executable_path="drivers\\geckodriver") in main method.

@@ -1,0 +1,53 @@
+import requests
+import json
+import sys
+
+url = "http://restapi.demoqa.com/utilities/weather/city/Hyderabad"
+try:
+	response = requests.get(url)
+except requests.exceptions.HTTPError as errh:
+    print ("Http Error:",errh)
+    sys.exit(1)
+except requests.exceptions.ConnectionError as errc:
+    print ("Error Connecting:",errc)
+    sys.exit(1)
+except requests.exceptions.Timeout as errt:
+    print ("Timeout Error:",errt)
+    sys.exit(1)
+except requests.exceptions.RequestException as err:
+    print ("OOps: Something Else",err)
+    sys.exit(1)
+
+data = response.content
+#convert byte to string
+data1= data.decode("utf-8") 
+#convert string to dict
+inf = json.loads(data1)
+#print(inf)
+#print(type(inf))
+#print(inf['City'])
+try:
+	assert inf['City'] == 'Hyderabad'
+except:
+	print("City is incorrect") 
+try:
+	assert inf['Humidity'] == '94 Percent'
+except:
+	print("Humidity is incorrect")
+try:
+	assert inf['Temperature'] == '24.05 Degree celsius'
+except:
+	print("Temperature is incorrect") 
+try:
+	assert inf['WeatherDescription'] == 'broken clouds'
+except:
+	print("WeatherDescription is incorrect") 
+
+try:
+	assert inf['WindSpeed'] == '3.1 Km per hour'
+except:
+	print("WindSpeed is incorrect") 
+try:
+	assert inf['WindDirectionDegree'] == '120 Degree'
+except:
+	print("WindDirectionDegree is incorrect") 
